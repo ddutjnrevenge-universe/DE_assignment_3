@@ -51,25 +51,26 @@ WHERE budget > 100000000
 GROUP BY original_language;
 ```
 
-Execution Plan:
-
-        Finalize GroupAggregate  (cost=71831.30..71863.50 rows=115 width=11) (actual time=194.640..200.940 rows=13 loops=1)
-        Group Key: original_language
-        ->  Gather Merge  (cost=71831.30..71861.20 rows=230 width=11) (actual time=194.632..200.924 rows=17 loops=1)
-                Workers Planned: 2
-                Workers Launched: 2
-                ->  Partial GroupAggregate  (cost=70831.28..70834.62 rows=115 width=11) (actual time=168.932..168.983 rows=6 loops=3)
-                    Group Key: original_language
-                    ->  Sort  (cost=70831.28..70832.01 rows=293 width=11) (actual time=168.922..168.938 rows=168 loops=3)
-                            Sort Key: original_language
-                            Sort Method: quicksort  Memory: 50kB
-                            Worker 0:  Sort Method: quicksort  Memory: 26kB
-                            Worker 1:  Sort Method: quicksort  Memory: 25kB
-                            ->  Parallel Seq Scan on movies  (cost=0.00..70819.27 rows=293 width=11) (actual time=18.310..168.709 rows=168 loops=3)
-                                Filter: (budget > 100000000)
-                                Rows Removed by Filter: 351315
-        Planning Time: 0.129 ms
-        Execution Time: 200.993 ms
+#### Execution Plan:
+```sql
+Finalize GroupAggregate  (cost=71831.30..71863.50 rows=115 width=11) (actual time=194.640..200.940 rows=13 loops=1)
+Group Key: original_language
+->  Gather Merge  (cost=71831.30..71861.20 rows=230 width=11) (actual time=194.632..200.924 rows=17 loops=1)
+        Workers Planned: 2
+        Workers Launched: 2
+        ->  Partial GroupAggregate  (cost=70831.28..70834.62 rows=115 width=11) (actual time=168.932..168.983 rows=6 loops=3)
+            Group Key: original_language
+            ->  Sort  (cost=70831.28..70832.01 rows=293 width=11) (actual time=168.922..168.938 rows=168 loops=3)
+                    Sort Key: original_language
+                    Sort Method: quicksort  Memory: 50kB
+                    Worker 0:  Sort Method: quicksort  Memory: 26kB
+                    Worker 1:  Sort Method: quicksort  Memory: 25kB
+                    ->  Parallel Seq Scan on movies  (cost=0.00..70819.27 rows=293 width=11) (actual time=18.310..168.709 rows=168 loops=3)
+                        Filter: (budget > 100000000)
+                        Rows Removed by Filter: 351315
+Planning Time: 0.129 ms
+Execution Time: 200.993 ms
+```
 #### Using `HAVING` Clause
 ```sql
 EXPLAIN ANALYZE
